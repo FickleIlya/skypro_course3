@@ -1,7 +1,9 @@
 package com.example.skyprocourse3.controller;
 
 
+import com.example.skyprocourse3.model.Faculty;
 import com.example.skyprocourse3.model.Student;
+import com.example.skyprocourse3.service.FacultyService;
 import com.example.skyprocourse3.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,11 @@ import java.util.Collection;
 public class StudentController {
 
     private final StudentService studentService;
+    private final FacultyService facultyService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, FacultyService facultyService) {
         this.studentService = studentService;
+        this.facultyService = facultyService;
     }
 
 
@@ -75,5 +79,25 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentsByAge(age));
     }
 
+    @GetMapping("/age/between/{minAge}/{maxAge}")
+    public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@PathVariable Integer minAge,
+                                                                       @PathVariable Integer maxAge) {
+        if (minAge == null || minAge < 0 || maxAge == null || maxAge < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(studentService.getStudentsByAgeBetween(minAge, maxAge));
+    }
 
+    @GetMapping("/{id}/faculty")
+    public ResponseEntity<Faculty> getFacultyByStudentId(@PathVariable Long id) {
+        Student student = studentService.getStudent(id);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Faculty faculty = facultyService.getFacultyById(student.getFaculty().getId());
+        if (faculty == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(faculty);
+    }
 }

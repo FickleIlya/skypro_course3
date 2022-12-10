@@ -1,7 +1,9 @@
 package com.example.skyprocourse3.service;
 
 
+import com.example.skyprocourse3.model.Faculty;
 import com.example.skyprocourse3.model.Student;
+import com.example.skyprocourse3.repository.FacultyRepository;
 import com.example.skyprocourse3.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ public class StudentService {
 
         studentToUpdate.setName(updateBody.getName());
         studentToUpdate.setAge(updateBody.getAge());
+        studentToUpdate.setFaculty(updateBody.getFaculty());
         return studentRepository.save(studentToUpdate);
     }
 
@@ -43,5 +46,12 @@ public class StudentService {
         return studentRepository.getStudentsByAge(id);
     }
 
+    public Collection<Student> getStudentsByAgeBetween(Integer minAge, Integer maxAge) {
+        return studentRepository.getStudentsByAgeBetween(minAge, maxAge);
+    }
+
+    public Collection<Student> getStudentsByFacultyId(Long id) {
+        return studentRepository.getStudentsByFacultyId(id);
+    }
 }
 

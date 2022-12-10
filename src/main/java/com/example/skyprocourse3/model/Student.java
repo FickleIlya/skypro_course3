@@ -1,12 +1,13 @@
 package com.example.skyprocourse3.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
+
 @Entity
+@Table(name = "student")
 public class Student {
 
     @Id
@@ -14,6 +15,11 @@ public class Student {
     private Long id;
     private String name;
     private Integer age;
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "faculty_id")
+    private Faculty faculty;
 
 
     @Override
@@ -59,5 +65,13 @@ public class Student {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 }

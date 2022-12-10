@@ -1,7 +1,9 @@
 package com.example.skyprocourse3.controller;
 
 import com.example.skyprocourse3.model.Faculty;
+import com.example.skyprocourse3.model.Student;
 import com.example.skyprocourse3.service.FacultyService;
+import com.example.skyprocourse3.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +13,11 @@ import java.util.Collection;
 @RequestMapping("/api/v1/faculties")
 public class FacultyController {
     private final FacultyService facultyService;
+    private final StudentService studentService;
 
-    public FacultyController(FacultyService facultyService) {
+    public FacultyController(FacultyService facultyService, StudentService studentService) {
         this.facultyService = facultyService;
+        this.studentService = studentService;
     }
 
     @GetMapping
@@ -31,7 +35,7 @@ public class FacultyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Faculty> getFacultyById(@PathVariable Long id) {
-        Faculty faculty = facultyService.getFaculty(id);
+        Faculty faculty = facultyService.getFacultyById(id);
         if (faculty == null) {
             return ResponseEntity.notFound().build();
         }
@@ -45,7 +49,7 @@ public class FacultyController {
             return ResponseEntity.badRequest().build();
         }
 
-        Faculty foundFaculty = facultyService.getFaculty(id);
+        Faculty foundFaculty = facultyService.getFacultyById(id);
         if (foundFaculty == null) {
             return ResponseEntity.notFound().build();
         }
@@ -55,7 +59,7 @@ public class FacultyController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long id) {
-        Faculty faculty = facultyService.getFaculty(id);
+        Faculty faculty = facultyService.getFacultyById(id);
         if (faculty == null) {
             return ResponseEntity.notFound().build();
         }
@@ -72,4 +76,20 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getFacultyByColor(color));
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Collection<Faculty>> getFacultyByNameIgnoreCase(@PathVariable String name) {
+        if (name == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(facultyService.getFacultyByNameIgnoreCase(name));
+    }
+
+    @GetMapping("/{id}/students")
+    public ResponseEntity<Collection<Student>> getFacultyStudents(@PathVariable Long id) {
+        Faculty faculty = facultyService.getFacultyById(id);
+        if (faculty == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(studentService.getStudentsByFacultyId(id));
+    }
 }

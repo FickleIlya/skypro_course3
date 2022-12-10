@@ -1,13 +1,13 @@
 package com.example.skyprocourse3.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import java.util.Objects;
-
+import java.util.Set;
 
 @Entity
+@Table(name = "faculty")
 public class Faculty {
 
     @Id
@@ -15,6 +15,11 @@ public class Faculty {
     private Long id;
     private String name;
     private String color;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "faculty")
+    @JsonIgnore
+    private Set<Student> students;
+
 
 
     @Override
@@ -61,5 +66,8 @@ public class Faculty {
     public void setColor(String color) {
         this.color = color;
     }
-}
 
+    public Set<Student> getStudents() {
+        return students;
+    }
+}

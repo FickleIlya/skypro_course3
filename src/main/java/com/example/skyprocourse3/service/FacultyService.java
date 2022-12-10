@@ -31,7 +31,7 @@ public class FacultyService {
         facultyRepository.deleteById(id);
     }
 
-    public Faculty getFaculty(Long id) {
+    public Faculty getFacultyById(Long id) {
         return facultyRepository.findById(id).orElse(null);
     }
 
@@ -43,5 +43,8 @@ public class FacultyService {
         return facultyRepository.findByColor(color);
     }
 
+    public Collection<Faculty> getFacultyByNameIgnoreCase(String name) {
+        return facultyRepository.findByNameIgnoreCase(name);
+    }
 }
 
