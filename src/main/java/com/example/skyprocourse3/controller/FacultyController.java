@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/faculties")
 public class FacultyController {
     private final FacultyService facultyService;
 
@@ -16,12 +16,12 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @GetMapping("/faculties")
+    @GetMapping
     public ResponseEntity<Collection<Faculty>> getFaculty() {
         return ResponseEntity.ok(facultyService.getAllFaculties());
     }
 
-    @PostMapping("/faculties")
+    @PostMapping
     public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty) {
         if (faculty.getName() == null || faculty.getColor() == null) {
             return ResponseEntity.badRequest().build();
@@ -29,7 +29,7 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.createFaculty(faculty));
     }
 
-    @GetMapping("/faculties/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Faculty> getFacultyById(@PathVariable Long id) {
         Faculty faculty = facultyService.getFaculty(id);
         if (faculty == null) {
@@ -39,9 +39,9 @@ public class FacultyController {
         return ResponseEntity.ok(faculty);
     }
 
-    @PutMapping("/faculties/{id}")
-    public ResponseEntity<Faculty> updateFaculty(@PathVariable Long id, @RequestBody Faculty faculty) {
-        if (faculty.getName() == null || faculty.getColor() == null) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Faculty> updateFaculty(@PathVariable Long id, @RequestBody Faculty requestBody) {
+        if (requestBody.getName() == null || requestBody.getColor() == null) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -50,13 +50,10 @@ public class FacultyController {
             return ResponseEntity.notFound().build();
         }
 
-        foundFaculty.setName(faculty.getName());
-        foundFaculty.setColor(faculty.getColor());
-
-        return ResponseEntity.ok(facultyService.updateFaculty(foundFaculty));
+        return ResponseEntity.ok(facultyService.updateFaculty(foundFaculty, requestBody));
     }
 
-    @DeleteMapping("/faculties/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long id) {
         Faculty faculty = facultyService.getFaculty(id);
         if (faculty == null) {
@@ -65,6 +62,14 @@ public class FacultyController {
 
         facultyService.deleteFaculty(id);
         return ResponseEntity.ok(faculty);
+    }
+
+    @GetMapping("/color/{color}")
+    public ResponseEntity<Collection<Faculty>> getFacultyByColor(@PathVariable String color) {
+        if (color == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(facultyService.getFacultyByColor(color));
     }
 
 }

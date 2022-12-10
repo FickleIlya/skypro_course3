@@ -20,8 +20,11 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Student updateStudent(Student student) {
-        return studentRepository.save(student);
+    public Student updateStudent(Student studentToUpdate, Student updateBody) {
+
+        studentToUpdate.setName(updateBody.getName());
+        studentToUpdate.setAge(updateBody.getAge());
+        return studentRepository.save(studentToUpdate);
     }
 
     public void deleteStudent(Long id) {
@@ -34,6 +37,10 @@ public class StudentService {
 
     public Collection<Student> getAllStudents() {
         return studentRepository.findAll();
+    }
+
+    public Collection<Student> getStudentsByAge(Integer id) {
+        return studentRepository.getStudentsByAge(id);
     }
 
 }
