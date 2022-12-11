@@ -68,16 +68,16 @@ public class FacultyController {
         return ResponseEntity.ok(faculty);
     }
 
-    @GetMapping("/color/{color}")
-    public ResponseEntity<Collection<Faculty>> getFacultyByColor(@PathVariable String color) {
+    @GetMapping("/color")
+    public ResponseEntity<Collection<Faculty>> getFacultyByColor(@RequestParam String color) {
         if (color == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(facultyService.getFacultyByColor(color));
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<Collection<Faculty>> getFacultyByNameIgnoreCase(@PathVariable String name) {
+    @GetMapping("/name")
+    public ResponseEntity<Collection<Faculty>> getFacultyByNameIgnoreCase(@RequestParam String name) {
         if (name == null) {
             return ResponseEntity.badRequest().build();
         }

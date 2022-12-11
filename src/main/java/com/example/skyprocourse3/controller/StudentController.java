@@ -71,17 +71,17 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudent(id));
     }
 
-    @GetMapping("/age/{age}")
-    public ResponseEntity<Collection<Student>> getStudentsByAge(@PathVariable Integer age) {
+    @GetMapping("/age")
+    public ResponseEntity<Collection<Student>> getStudentsByAge(@RequestParam Integer age) {
         if (age == null || age < 0) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(studentService.getStudentsByAge(age));
     }
 
-    @GetMapping("/age/between/{minAge}/{maxAge}")
-    public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@PathVariable Integer minAge,
-                                                                       @PathVariable Integer maxAge) {
+    @GetMapping("/age/between")
+    public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@RequestParam Integer minAge,
+                                                                       @RequestParam Integer maxAge) {
         if (minAge == null || minAge < 0 || maxAge == null || maxAge < 0) {
             return ResponseEntity.badRequest().build();
         }
