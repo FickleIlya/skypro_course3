@@ -21,7 +21,6 @@ public class Student {
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
-
     @Override
     public String toString() {
         return "Student{" +
