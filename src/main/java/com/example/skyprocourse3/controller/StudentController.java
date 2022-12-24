@@ -5,13 +5,14 @@ import com.example.skyprocourse3.model.Faculty;
 import com.example.skyprocourse3.model.Student;
 import com.example.skyprocourse3.service.FacultyService;
 import com.example.skyprocourse3.service.StudentService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api/v1/students")
+@RequestMapping(value="/api/v1/students", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StudentController {
 
     private final StudentService studentService;
@@ -26,6 +27,21 @@ public class StudentController {
     @GetMapping
     public ResponseEntity<Collection<Student>> getStudents() {
         return ResponseEntity.ok(studentService.getAllStudents());
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getStudentsCount() {
+        return ResponseEntity.ok(studentService.getStudentsCount());
+    }
+
+    @GetMapping("/avgAge")
+    public ResponseEntity<Integer> getStudentsAvgAge() {
+        return ResponseEntity.ok(studentService.getStudentsAvgAge());
+    }
+
+    @GetMapping("/lastFiveStudents")
+    public ResponseEntity<Collection<Student>> getLastFiveStudents() {
+        return ResponseEntity.ok(studentService.getLastFiveStudents());
     }
 
     @PostMapping

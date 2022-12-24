@@ -3,9 +3,9 @@ package com.example.skyprocourse3.service;
 import com.example.skyprocourse3.model.Avatar;
 import com.example.skyprocourse3.model.Student;
 import com.example.skyprocourse3.repository.AvatarRepository;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -48,8 +49,12 @@ public class AvatarService {
         return avatarRepository.findById(id).orElse(null);
     }
 
-    public Iterable<Avatar> getAllAvatars() {
-        return avatarRepository.findAll();
+    public Collection<Avatar> getAllAvatars(Integer page, Integer size) {
+        if (page == null || size == null) {
+            return avatarRepository.findAll();
+        }
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        return avatarRepository.findAll(pageRequest).getContent();
     }
 
     public Avatar getAvatarByStudentId(Long student_id) {

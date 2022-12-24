@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/v1/avatars")
@@ -28,8 +29,13 @@ public class AvatarController {
         this.studentService = studentService;
     }
 
+    @GetMapping
+    public ResponseEntity<Collection<Avatar>> getAllAvatars(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+        return ResponseEntity.ok(avatarService.getAllAvatars(page, size));
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Avatar> getAvatarById(@PathVariable Long id) throws IOException {
+    public ResponseEntity<Avatar> getAvatarById(@PathVariable Long id) {
         Avatar avatar = avatarService.getAvatarById(id);
         if (avatar == null) {
             return ResponseEntity.notFound().build();
