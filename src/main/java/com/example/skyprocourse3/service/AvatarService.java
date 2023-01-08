@@ -3,6 +3,8 @@ package com.example.skyprocourse3.service;
 import com.example.skyprocourse3.model.Avatar;
 import com.example.skyprocourse3.model.Student;
 import com.example.skyprocourse3.repository.AvatarRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +23,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Service
 public class AvatarService {
 
+    Logger logger = LoggerFactory.getLogger(AvatarService.class);
+
     private final AvatarRepository avatarRepository;
     private final StudentService studentService;
 
@@ -30,6 +34,7 @@ public class AvatarService {
     }
 
     public Avatar createAvatar(MultipartFile avatar, Student student) throws IOException {
+        logger.info("Was invoked method for create student");
         Path path = Path.of("src/main/resources/avatars/", student.getId() + "." +
                 Objects.requireNonNull(avatar.getContentType()).split("/")[1]);
         Files.createDirectories(path.getParent());
@@ -40,16 +45,21 @@ public class AvatarService {
             BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
             OutputStream bufferedOutputStream = new BufferedOutputStream(outputStream)) {
             bufferedInputStream.transferTo(bufferedOutputStream);
+        } catch (IOException e) {
+            logger.error("Error while creating avatar", e);
+            throw new IOException("Error while creating avatar", e);
         }
         Avatar newAvatar = createAvatarBody(avatar, student, path);
         return avatarRepository.save(newAvatar);
     }
 
     public Avatar getAvatarById(Long id) {
+        logger.info("Was invoked method for get avatar by id");
         return avatarRepository.findById(id).orElse(null);
     }
 
     public Collection<Avatar> getAllAvatars(Integer page, Integer size) {
+        logger.info("Was invoked method for get all avatars");
         if (page == null || size == null) {
             return avatarRepository.findAll();
         }
@@ -58,10 +68,12 @@ public class AvatarService {
     }
 
     public Avatar getAvatarByStudentId(Long student_id) {
+        logger.info("Was invoked method for get avatar by student id");
         return avatarRepository.getAvatarByStudentId(student_id);
     }
 
     public Avatar updateAvatar(Avatar avatarToUpdate, Avatar updateBody) {
+        logger.info("Was invoked method for update avatar");
         avatarToUpdate.setData(updateBody.getData());
         avatarToUpdate.setMediaType(updateBody.getMediaType());
         avatarToUpdate.setFileSize(updateBody.getFileSize());
@@ -69,10 +81,12 @@ public class AvatarService {
     }
 
     public void deleteAvatar(Long id) {
+        logger.info("Was invoked method for delete avatar");
         avatarRepository.deleteById(id);
     }
 
     public Resource loadAsResource(Avatar avatar) {
+        logger.info("Was invoked method for load avatar as resource");
         String filename = avatar.getStudent().getId() + "." + avatar.getMediaType().split("/")[1];
         try {
             Path rootLocation = Path.of("src/main/resources/avatars/");
@@ -84,10 +98,12 @@ public class AvatarService {
                 return resource;
             }
             else {
-                throw new FileNotFoundException("Could not read file: " + filename);
+                logger.error("file with name: " + filename + " not found", new FileNotFoundException());
+                throw new FileNotFoundException("file with name: " + filename + " not found");
             }
         }
         catch (MalformedURLException | FileNotFoundException e) {
+            logger.error("Could not read file: " + filename, e);
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }
