@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 @Service
 public class StudentService {
@@ -43,9 +44,14 @@ public class StudentService {
         return studentRepository.findById(id).orElse(null);
     }
 
-    public Collection<Student> getAllStudents() {
+    public Collection<Student> getAllStudents(String letter) {
         logger.info("Was invoked method for get all students");
-        return studentRepository.findAll();
+        if (letter == null) {
+            return studentRepository.findAll();
+        }
+        return studentRepository.findAll().parallelStream()
+                .filter(student -> student.getName().startsWith(letter))
+                .toList();
     }
 
     public Collection<Student> getStudentsByAge(Integer id) {
@@ -77,5 +83,27 @@ public class StudentService {
         logger.info("Was invoked method for get last five students");
         return studentRepository.getLastFiveStudents();
     }
-}
 
+    public Integer getStudentsAvgAgeParallel() {
+        logger.info("Was invoked method for get student avg age parallel");
+        return (int) studentRepository.findAll().parallelStream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0);
+    }
+
+    public Integer quickMath() {
+        long startTime = System.nanoTime();
+        Integer sum = Stream
+                .iterate(1, a -> a + 1)
+                .limit(100_000_000)
+                .parallel()
+                .reduce(0, Integer::sum);
+
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println(duration);
+        return sum;
+
+    }
+}

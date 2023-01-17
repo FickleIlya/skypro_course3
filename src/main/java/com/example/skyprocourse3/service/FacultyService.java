@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Optional;
 
 @Service
 public class FacultyService {
@@ -55,6 +57,15 @@ public class FacultyService {
     public Collection<Faculty> getFacultyByNameIgnoreCase(String name) {
         logger.info("Was invoked method for get faculty by name");
         return facultyRepository.findByNameIgnoreCase(name);
+    }
+
+    public String getFacultyWithLongestName() {
+        logger.info("Was invoked method for get faculty with longest name");
+        return facultyRepository.findAll().parallelStream()
+                .max(Comparator.comparingInt(faculty -> faculty.getName().length()))
+                .map(Faculty::getName)
+                .orElse(null);
+
     }
 }
 

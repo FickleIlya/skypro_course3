@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/faculties")
@@ -91,5 +92,10 @@ public class FacultyController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(studentService.getStudentsByFacultyId(id));
+    }
+
+    @GetMapping("/longestFacultyName")
+    public ResponseEntity<String> getFacultyWithLongestName() {
+        return ResponseEntity.ok(facultyService.getFacultyWithLongestName());
     }
 }

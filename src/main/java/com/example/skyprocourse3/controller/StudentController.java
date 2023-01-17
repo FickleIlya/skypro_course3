@@ -25,8 +25,8 @@ public class StudentController {
 
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> getStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public ResponseEntity<Collection<Student>> getStudents(@RequestParam String letter) {
+        return ResponseEntity.ok(studentService.getAllStudents(letter));
     }
 
     @GetMapping("/count")
@@ -115,5 +115,15 @@ public class StudentController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(faculty);
+    }
+
+    @GetMapping("/avgAge/parallel")
+    public ResponseEntity<Integer> getStudentsAvgAgeParallel() {
+        return ResponseEntity.ok(studentService.getStudentsAvgAgeParallel());
+    }
+
+    @GetMapping("/quickMath")
+    public ResponseEntity<Integer> quickMath() {
+        return ResponseEntity.ok(studentService.quickMath());
     }
 }
