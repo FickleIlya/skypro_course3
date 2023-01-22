@@ -13,6 +13,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Collection<Student> getStudentsByFacultyId(Long id);
 
+    @Query(value="SELECT name FROM Student")
+    Collection<String> getStudentsNames();
+
     @Query(value="select round(avg(age), 0) as avgAge from Student", nativeQuery = true)
     Integer getStudentsAvgAge();
 
