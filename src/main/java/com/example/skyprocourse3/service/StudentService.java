@@ -13,6 +13,8 @@ import java.util.stream.Stream;
 @Service
 public class StudentService {
 
+    public Integer indx = 0;
+
     Logger logger = LoggerFactory.getLogger(StudentService.class);
     private final StudentRepository studentRepository;
 
@@ -105,5 +107,62 @@ public class StudentService {
         System.out.println(duration);
         return sum;
 
+    }
+
+    public void getStudentsNameInThread() {
+        logger.info("Was invoked method for get students name in thread");
+        System.out.println(studentRepository.getStudentsNames());
+
+        System.out.println(getStudentNameByIndex(0));
+        System.out.println(getStudentNameByIndex(1));
+
+        Thread thread = new Thread(() -> {
+            System.out.println(getStudentNameByIndex(2));
+            System.out.println(getStudentNameByIndex(3));
+        });
+
+        thread.start();
+
+        Thread thread2 = new Thread(() -> {
+            System.out.println(getStudentNameByIndex(4));
+            System.out.println(getStudentNameByIndex(5));
+        });
+
+        thread2.start();
+    }
+
+    public void getStudentsNameInThreadsSynchronized () {
+        logger.info("Was invoked method for get students name in threads synchronized");
+        System.out.println(studentRepository.getStudentsNames());
+
+        System.out.println(getStudentNameSynchronized());
+        System.out.println(getStudentNameSynchronized());
+
+        Thread thread = new Thread(() -> {
+            System.out.println(getStudentNameSynchronized());
+            System.out.println(getStudentNameSynchronized());
+        });
+
+        thread.start();
+
+        Thread thread2 = new Thread(() -> {
+            System.out.println(getStudentNameSynchronized());
+            System.out.println(getStudentNameSynchronized());
+        });
+
+        thread2.start();
+    }
+
+    private String getStudentNameSynchronized() {
+        synchronized (this) {
+            String name =studentRepository.getStudentsNames().toArray()[indx].toString();
+            indx++;
+            return name;
+
+        }
+    }
+
+    private String getStudentNameByIndex(Integer index) {
+        return studentRepository.getStudentsNames().toArray()[index].toString();
     }
 }

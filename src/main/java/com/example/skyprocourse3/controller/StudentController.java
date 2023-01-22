@@ -126,4 +126,14 @@ public class StudentController {
     public ResponseEntity<Integer> quickMath() {
         return ResponseEntity.ok(studentService.quickMath());
     }
+
+    @GetMapping("/getStudentsNameInThread")
+    public void getStudentsNameInThread() {
+        studentService.getStudentsNameInThread();
+    }
+
+    @GetMapping("/getStudentsNameInThreadsSynchronized")
+    public void getStudentsNameInThreadsSynchronized() {
+        studentService.getStudentsNameInThreadsSynchronized();
+    }
 }
